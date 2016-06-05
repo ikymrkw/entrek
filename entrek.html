@@ -2,7 +2,23 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
+<title>EnTrek: 登山エネルギー消費計算機</title>
+<style>
+input.en { text-align: right; }
+input.par { text-align: right; width: 8em;}
+</style>
 <script>
+function round(f) {
+  var s = "" + (Math.round(f * 100.0) / 100.0);
+  if (s.search("[.][0-9]$") != -1) {
+    s += "0";
+  }
+  else if (s.search("[.]") == -1) {
+    s += ".00";
+  }
+  return s;
+}
+
 function num(i) {
         var s = "" + i;
         if (s.search("^([0-9]*[.])?[0-9]+$") == 0) {
@@ -39,17 +55,21 @@ function update() {
 	  err = 1;
 	}
 
-	f.energy.value = (ibw + icw) * (1.8 * itm + 0.3 * ihd + 10.0 * iud + 0.6 * idd);
-	f.en_tm .value = (ibw + icw) * ( 1.8 * itm);
-	f.en_hd .value = (ibw + icw) * ( 0.3 * ihd);
-	f.en_ud .value = (ibw + icw) * (10.0 * iud);
-	f.en_dd .value = (ibw + icw) * ( 0.6 * idd);
+	var fw = (ibw + icw);
+	var fa = (1.8 * itm + 0.3 * ihd + 10.0 * iud + 0.6 * idd);
+	f.energy.value = round( fw * fa );
+	f.en_tm .value = round( fw * ( 1.8 * itm) );
+	f.en_hd .value = round( fw * ( 0.3 * ihd) );
+	f.en_ud .value = round( fw * (10.0 * iud) );
+	f.en_dd .value = round( fw * ( 0.6 * idd) );
+	f.en_bw .value = round( ibw * fa );
+	f.en_cw .value = round( icw * fa );
 
         var lk = "";
 	var addlk = function(name, value) {
 	  if (!(value>=0)) return;
 	  if (lk.length == 0) {
-	    lk += "#";
+	    lk += "?";
 	  } else {
 	    lk += "&";
 	  }
@@ -67,9 +87,9 @@ function update() {
 }
 function setup() {
         var ibw=-1, icw=-1, itm=-1, ihd=-1, idd=-1, iud=-1;
-	var h = window.location.hash;
+	var h = window.location.search;
         if (h==null || h==="") {} else {
-          h = h.substring(1); // strip #
+          h = h.substring(1); // to strip the first '?' 
           var hs = h.split("&");
           for (var i=0; i<hs.length; i++) {
             var nvp = hs[i].split("=");
@@ -80,7 +100,7 @@ function setup() {
               icw = nvp[1];
             }
             if (nvp[0]==="tm") {
-              it = nvp[1];
+              itm = nvp[1];
             }
             if (nvp[0]==="hd") {
               ihd = nvp[1];
@@ -124,37 +144,56 @@ function setup() {
 </script>
 </head>
 <body onload="setup()">
+<h1>EnTrek: 登山エネルギー消費計算機</h1>
 <form name="f">
-(
-体重 <input type="text" name="bweight" id="bweight"> kg
-+
-荷物 <input type="text" name="cweight" id="cweight"> kg
-)
-<br>
-*
-(
-<br>
-歩行時間 <input type="text" name="time" id="time"> h * 1.8
-<br>
-+
-歩行距離 <input type="text" name="hdist" id="hdist"> km * 0.3
-+
-登り高低差 <input type="text" name="udist" id="udist"> km * 10.0
-+
-下り高低差 <input type="text" name="ddist" id="ddist"> km * 0.6
-<br>
-)
-<br>
-=
-<input type="text" name="energy" id="energy" disabled> kcal
-<br>
-時間寄与分 <input type="text" name="en_t" id="en_tm" disabled> kcal 
-<br>
-距離寄与分 <input type="text" name="en_hd" id="en_hd" disabled> kcal 
-<br>
-登り寄与分 <input type="text" name="en_ud" id="en_ud" disabled> kcal 
-<br>
-下り寄与分 <input type="text" name="en_dd" id="en_dd" disabled> kcal 
+<table>
+  <tr>
+    <th colspan="3">パラメーター
+    <th>→
+    <th colspan="2">エネルギー消費
+  <tr>
+    <th rowspan="2">重量
+    <td>体重
+    <td><input type="text" name="bweight" id="bweight" class="par"> kg
+    <td>
+    <td>体重寄与分
+    <td><input type="text" name="en_bw" id="en_bw" disabled class="en"> kcal
+  <tr>
+    <td>荷物
+    <td><input type="text" name="cweight" id="cweight" class="par"> kg
+    <td>
+    <td>荷物寄与分
+    <td><input type="text" name="en_cw" id="en_cw" disabled class="en"> kcal
+  <tr>
+    <th rowspan="4">行動
+    <td>歩行時間
+    <td><input type="text" name="time" id="time" class="par"> h * 1.8
+    <td>
+    <td>時間寄与分
+    <td><input type="text" name="en_t" id="en_tm" disabled class="en"> kcal 
+  <tr>
+    <td>歩行距離
+    <td><input type="text" name="hdist" id="hdist" class="par"> km * 0.3
+    <td>
+    <td>距離寄与分
+    <td><input type="text" name="en_hd" id="en_hd" disabled class="en"> kcal 
+  <tr>
+    <td>登り高低差
+    <td><input type="text" name="udist" id="udist" class="par"> km * 10.0
+    <td>
+    <td>登り寄与分
+    <td><input type="text" name="en_ud" id="en_ud" disabled class="en"> kcal 
+  <tr>
+    <td>下り高低差
+    <td><input type="text" name="ddist" id="ddist" class="par"> km * 0.6
+    <td>
+    <td>下り寄与分
+    <td><input type="text" name="en_dd" id="en_dd" disabled class="en"> kcal 
+  <tr>
+    <td colspan="4">
+    <td>総エネルギー消費
+    <td><input type="text" name="energy" id="energy" disabled class="en"> kcal
+</table>
 
 </form>
 <p>
