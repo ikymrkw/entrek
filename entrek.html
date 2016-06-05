@@ -1,16 +1,39 @@
 <html lang="ja">
+
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <title>EnTrek: 登山エネルギー消費計算機</title>
+
 <style>
-input.en { text-align: right; }
+table { border-width: 0; border-collapse: collapse; }
+td,th { padding-left: 8px; padding-right: 8px; }
+input.en  { text-align: right; width: 8em;
+	background-color: #dddddd; border-color: #dddddd; border-style: solid; }
 input.par { text-align: right; width: 8em;}
+#main { background-color: #cccc99; display: inline-block;}
+#calc { background-color: #88ff88; margin: 12px; }
+
+tr.row_header { background-color: #33cc00; }
+tr.row_weight { background-color: #cccc66; }
+tr.row_action { background-color: #99cc33; }
+tr.row_total  { background-color: #66cc00; }
+td.row_total_empty  { background-color: #cccc99; }
 </style>
+
 <script>
-function round(f) {
+// Format energy f kcal properly
+//   NaN    => "NaN"
+//   12.34  => "12.34"
+//   12.345 => "12.35" (rounding)
+//   12.1   => "12.10" (right-pad zeros)
+//   12     => "12.00" (right-pad zeros (and point))
+function enformat(f) {
   var s = "" + (Math.round(f * 100.0) / 100.0);
-  if (s.search("[.][0-9]$") != -1) {
+  if (s==="NaN") {
+    // do nothing
+  }
+  else if (s.search("[.][0-9]$") != -1) {
     s += "0";
   }
   else if (s.search("[.]") == -1) {
@@ -19,14 +42,18 @@ function round(f) {
   return s;
 }
 
-function num(i) {
-        var s = "" + i;
+// Format parameter f properly (for safe URL)
+// String representation of f must be "#", "#.#", or ".#"
+// where "#" is digits of any length.
+function num(f) {
+        var s = "" + f;
         if (s.search("^([0-9]*[.])?[0-9]+$") == 0) {
           return s;
         }
         return "";
 }
 
+// Read parameters from the form and calculate energy consumption.
 function update() {
 	var e, sbw, scw, stm, shd, sud, sdd;
 	e = document.f.bweight;
@@ -56,18 +83,19 @@ function update() {
 	}
 
 	var fw = (ibw + icw);
-	var fa = (1.8 * itm + 0.3 * ihd + 10.0 * iud + 0.6 * idd);
-	f.energy.value = round( fw * fa );
-	f.en_tm .value = round( fw * ( 1.8 * itm) );
-	f.en_hd .value = round( fw * ( 0.3 * ihd) );
-	f.en_ud .value = round( fw * (10.0 * iud) );
-	f.en_dd .value = round( fw * ( 0.6 * idd) );
-	f.en_bw .value = round( ibw * fa );
-	f.en_cw .value = round( icw * fa );
+	var fa = (1.8 * itm / 60.0 + 0.3 * ihd + 10.0 * iud + 0.6 * idd);
+	f.energy.value = enformat( fw * fa );
+	f.en_tm .value = enformat( fw * ( 1.8 * itm / 60.0) );
+	f.en_hd .value = enformat( fw * ( 0.3 * ihd) );
+	f.en_ud .value = enformat( fw * (10.0 * iud) );
+	f.en_dd .value = enformat( fw * ( 0.6 * idd) );
+	f.en_bw .value = enformat( ibw * fa );
+	f.en_cw .value = enformat( icw * fa );
 
+	// Create link
         var lk = "";
 	var addlk = function(name, value) {
-	  if (!(value>=0)) return;
+	  if (!(value>0)) return;
 	  if (lk.length == 0) {
 	    lk += "?";
 	  } else {
@@ -83,10 +111,16 @@ function update() {
         addlk("dd", idd);
         var elem = document.getElementById("lk");
         elem.href = lk;
-        elem.innerText = lk;
+        //elem.innerText = (lk==="") ? "." : lk;
 }
+
+// This function does 3 things:
+//   - read initial values from URL query parameters (if any),
+//   - add event handlers (update) and ini-values to the form, and
+//   - the first update (reflect initial parameters to energy)
 function setup() {
-        var ibw=-1, icw=-1, itm=-1, ihd=-1, idd=-1, iud=-1;
+        // Read initial values from query
+        var ibw=0, icw=0, itm=0, ihd=0, idd=0, iud=0;
 	var h = window.location.search;
         if (h==null || h==="") {} else {
           h = h.substring(1); // to strip the first '?' 
@@ -113,6 +147,8 @@ function setup() {
             }
           }
         }
+	
+	// Initialized controls (event handlers and ini-values)
 	var e;
 	e = document.getElementById("bweight");
         if (ibw+1>0) e.value = ibw;
@@ -139,65 +175,84 @@ function setup() {
 	e.onchange = update;
 	e.onkeydown = update;
 
+        // first calculation
         update();
 }
 </script>
 </head>
+
 <body onload="setup()">
 <h1>EnTrek: 登山エネルギー消費計算機</h1>
+
+<div id="main">
+<div>
 <form name="f">
-<table>
-  <tr>
+<table id="calc">
+  <tr class="row_header">
     <th colspan="3">パラメーター
     <th>→
     <th colspan="2">エネルギー消費
-  <tr>
+  <tr class="row_weight">
     <th rowspan="2">重量
     <td>体重
     <td><input type="text" name="bweight" id="bweight" class="par"> kg
     <td>
     <td>体重寄与分
     <td><input type="text" name="en_bw" id="en_bw" disabled class="en"> kcal
-  <tr>
+  <tr class="row_weight">
     <td>荷物
     <td><input type="text" name="cweight" id="cweight" class="par"> kg
     <td>
     <td>荷物寄与分
     <td><input type="text" name="en_cw" id="en_cw" disabled class="en"> kcal
-  <tr>
+  <tr class="row_action">
     <th rowspan="4">行動
     <td>歩行時間
-    <td><input type="text" name="time" id="time" class="par"> h * 1.8
+    <td><input type="text" name="time" id="time" class="par"> min * 0.03
     <td>
     <td>時間寄与分
     <td><input type="text" name="en_t" id="en_tm" disabled class="en"> kcal 
-  <tr>
+  <tr class="row_action">
     <td>歩行距離
     <td><input type="text" name="hdist" id="hdist" class="par"> km * 0.3
     <td>
     <td>距離寄与分
     <td><input type="text" name="en_hd" id="en_hd" disabled class="en"> kcal 
-  <tr>
+  <tr class="row_action">
     <td>登り高低差
     <td><input type="text" name="udist" id="udist" class="par"> km * 10.0
     <td>
     <td>登り寄与分
     <td><input type="text" name="en_ud" id="en_ud" disabled class="en"> kcal 
-  <tr>
+  <tr class="row_action">
     <td>下り高低差
     <td><input type="text" name="ddist" id="ddist" class="par"> km * 0.6
     <td>
     <td>下り寄与分
     <td><input type="text" name="en_dd" id="en_dd" disabled class="en"> kcal 
-  <tr>
-    <td colspan="4">
+  <tr class="row_total">
+    <td colspan="4" class="row_total_empty">
     <td>総エネルギー消費
     <td><input type="text" name="energy" id="energy" disabled class="en"> kcal
 </table>
 
 </form>
+</div>
+
 <p>
-<a href="#" id="lk">#</a>
+<a href="?" id="lk">現在の結果へのリンク</a> ／ <a href="?">クリア</a>
 </p>
+<p>
+注意：目安の値です。正確性は保証しません。
+</p>
+</div>
+<p>
+サンプル
+<ul>
+  <li> <a href="?bw=65&cw=5&tm=170&hd=7.1&ud=0.4&dd=0.4">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</a>
+  <li> <a href="?bw=65&cw=5&tm=240&hd=9&ud=0.835&dd=0.832">高水三山（65+5kg, 軍畑駅〜御嶽駅）</a>
+  <li> <a href="?bw=65&cw=5&tm=615&hd=13.2&ud=1.450&dd=1.450">富士山（65+5kg, 吉田口から往復）</a>
+, <a href="?bw=65&cw=5&tm=725&hd=15.5&ud=1.570&dd=1.570">（同左＋お鉢巡り）</a>
+</ul>
 </body>
 </html>
