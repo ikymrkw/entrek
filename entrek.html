@@ -114,6 +114,14 @@ function update() {
         //elem.innerText = (lk==="") ? "." : lk;
 }
 
+function condfocus(control) {
+  if (!control.value || control.value.length==0 || (0+control.value)==0) {
+    control.select(); control.focus();
+    return true;
+  }
+  return false;
+}
+
 // This function does 3 things:
 //   - read initial values from URL query parameters (if any),
 //   - add event handlers (update) and ini-values to the form, and
@@ -174,6 +182,21 @@ function setup() {
         if (idd+1>0) e.value = idd;
 	e.onchange = update;
 	e.onkeydown = update;
+
+	// default focus
+	if (!condfocus(document.f.bweight)) {
+	  if (!condfocus(document.f.cweight)) {
+	    if (!condfocus(document.f.time)) {
+	      if (!condfocus(document.f.hdist)) {
+	        if (!condfocus(document.f.udist)) {
+	          if (!condfocus(document.f.ddist)) {
+	            document.f.time.focus();
+	          }
+	        }
+	      }
+	    }
+	  }
+	}
 
         // first calculation
         update();
@@ -239,20 +262,23 @@ function setup() {
 </form>
 </div>
 
-<p>
-<a href="?" id="lk">現在の結果へのリンク</a> ／ <a href="?">クリア</a>
-</p>
-<p>
-注意：目安の値です。正確性は保証しません。
-</p>
+<div>
+<a href="?" id="lk">現在の結果へのリンク</a> 
+／ <a href="#" onclick="update()">再計算</a>
+／ <a href="?">クリア</a>
 </div>
-<p>
-サンプル
+<div>
+注意：目安の値です。正確性は保証しません。
+</div>
+</div>
+<div>
+<p>サンプル</p>
 <ul>
   <li> <a href="?bw=65&cw=5&tm=170&hd=7.1&ud=0.4&dd=0.4">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</a>
   <li> <a href="?bw=65&cw=5&tm=240&hd=9&ud=0.835&dd=0.832">高水三山（65+5kg, 軍畑駅〜御嶽駅）</a>
   <li> <a href="?bw=65&cw=5&tm=615&hd=13.2&ud=1.450&dd=1.450">富士山（65+5kg, 吉田口から往復）</a>
 , <a href="?bw=65&cw=5&tm=725&hd=15.5&ud=1.570&dd=1.570">（同左＋お鉢巡り）</a>
 </ul>
+</div>
 </body>
 </html>
