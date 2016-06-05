@@ -22,6 +22,7 @@ td.row_total_empty  { background-color: #cccc99; }
 </style>
 
 <script>
+<!--
 // Format energy f kcal properly
 //   NaN    => "NaN"
 //   12.34  => "12.34"
@@ -55,63 +56,58 @@ function num(f) {
 
 // Read parameters from the form and calculate energy consumption.
 function update() {
-	var e, sbw, scw, stm, shd, sud, sdd;
-	e = document.f.bweight;
-	sbw = e.value;
-	e = document.f.cweight;
-	scw = e.value;
-	e = document.f.time;
-	stm  = e.value;
-	e = document.f.hdist;
-	shd = e.value;
-	e = document.f.udist;
-	sud = e.value;
-	e = document.f.ddist;
-	sdd = e.value;
+	var sbw, scw, stm, shd, sud, sdd;
+	sbw = document.f.bweight.value;
+	scw = document.f.cweight.value;
+	stm = document.f.time.value;
+	shd = document.f.hdist.value;
+	sud = document.f.udist.value;
+	sdd = document.f.ddist.value;
 	
-	var ibw, icw, itm, ihd, iud, idd;
+	var ibw, fcw, itm, ihd, fud, fdd;
 	var err = 0;
 	try {
-	  ibw = parseFloat(sbw);
-	  icw = parseFloat(scw);
-	  itm = parseFloat(stm);
-	  ihd = parseFloat(shd);
-	  iud = parseFloat(sud);
-	  idd = parseFloat(sdd);
+	  fbw = parseFloat(sbw);
+	  fcw = parseFloat(scw);
+	  ftm = parseFloat(stm);
+	  fhd = parseFloat(shd);
+	  fud = parseFloat(sud);
+	  fdd = parseFloat(sdd);
 	} catch (ex) {
 	  err = 1;
 	}
 
-	var fw = (ibw + icw);
-	var fa = (1.8 * itm / 60.0 + 0.3 * ihd + 10.0 * iud + 0.6 * idd);
+	var fw = (fbw + fcw);
+	var fa = (1.8 * ftm / 60.0 + 0.3 * fhd + 10.0 * fud + 0.6 * fdd);
 	f.energy.value = enformat( fw * fa );
-	f.en_tm .value = enformat( fw * ( 1.8 * itm / 60.0) );
-	f.en_hd .value = enformat( fw * ( 0.3 * ihd) );
-	f.en_ud .value = enformat( fw * (10.0 * iud) );
-	f.en_dd .value = enformat( fw * ( 0.6 * idd) );
-	f.en_bw .value = enformat( ibw * fa );
-	f.en_cw .value = enformat( icw * fa );
+	f.en_tm .value = enformat( fw * ( 1.8 * ftm / 60.0) );
+	f.en_hd .value = enformat( fw * ( 0.3 * fhd) );
+	f.en_ud .value = enformat( fw * (10.0 * fud) );
+	f.en_dd .value = enformat( fw * ( 0.6 * fdd) );
+	f.en_bw .value = enformat( fbw * fa );
+	f.en_cw .value = enformat( fcw * fa );
 
 	// Create link
         var lk = "";
 	var addlk = function(name, value) {
 	  if (!(value>0)) return;
 	  if (lk.length == 0) {
-	    lk += "?";
+	    lk += "#";
 	  } else {
 	    lk += "&";
 	  }
 	  lk += name + "=" + num(value);
 	};
-        addlk("bw", ibw);
-        addlk("cw", icw);
-        addlk("tm", itm);
-        addlk("hd", ihd);
-        addlk("ud", iud);
-        addlk("dd", idd);
+        addlk("bw", fbw);
+        addlk("cw", fcw);
+        addlk("tm", ftm);
+        addlk("hd", fhd);
+        addlk("ud", fud);
+        addlk("dd", fdd);
         var elem = document.getElementById("lk");
         elem.href = lk;
         //elem.innerText = (lk==="") ? "." : lk;
+	// ikymrkw
 }
 
 function condfocus(control) {
@@ -122,66 +118,65 @@ function condfocus(control) {
   return false;
 }
 
-// This function does 3 things:
-//   - read initial values from URL query parameters (if any),
-//   - add event handlers (update) and ini-values to the form, and
-//   - the first update (reflect initial parameters to energy)
-function setup() {
+function initControls(hashOnly) {
         // Read initial values from query
-        var ibw=0, icw=0, itm=0, ihd=0, idd=0, iud=0;
-	var h = window.location.search;
-        if (h==null || h==="") {} else {
-          h = h.substring(1); // to strip the first '?' 
-          var hs = h.split("&");
-          for (var i=0; i<hs.length; i++) {
-            var nvp = hs[i].split("=");
-            if (nvp[0]==="bw") {
-              ibw = nvp[1];
-            }
-            if (nvp[0]==="cw") {
-              icw = nvp[1];
-            }
-            if (nvp[0]==="tm") {
-              itm = nvp[1];
-            }
-            if (nvp[0]==="hd") {
-              ihd = nvp[1];
-            }
-            if (nvp[0]==="ud") {
-              iud = nvp[1];
-            }
-            if (nvp[0]==="dd") {
-              idd = nvp[1];
+        var fbw=0, fcw=0, ftm=0, fhd=0, fdd=0, fud=0;
+        var parse = function(h) {
+          if (h==null || h==="") {} else {
+            h = h.substring(1); // to strip the first '?' 
+            var hs = h.split("&");
+            for (var i=0; i<hs.length; i++) {
+              var nvp = hs[i].split("=");
+              if (nvp[0]==="bw") {
+                fbw = nvp[1];
+              }
+              if (nvp[0]==="cw") {
+                fcw = nvp[1];
+              }
+              if (nvp[0]==="tm") {
+                ftm = nvp[1];
+              }
+              if (nvp[0]==="hd") {
+                fhd = nvp[1];
+              }
+              if (nvp[0]==="ud") {
+                fud = nvp[1];
+              }
+              if (nvp[0]==="dd") {
+                fdd = nvp[1];
+              }
             }
           }
-        }
+        };
+        if (!hashOnly) parse(window.location.search);
+	parse(window.location.hash);
 	
 	// Initialized controls (event handlers and ini-values)
+	var fevt = function(elem) {
+          if (!hashOnly) {
+            elem.onchange = update;
+            elem.onkeyup = update;
+          }
+        };
 	var e;
 	e = document.getElementById("bweight");
-        if (ibw+1>0) e.value = ibw;
-	e.onchange = update;
-	e.onkeyup = update;
+        e.value = fbw;
+	fevt(e);
 	e = document.getElementById("cweight");
-        if (icw+1>0) e.value = icw;
-	e.onchange = update;
-	e.onkeyup = update;
+        e.value = fcw;
+	fevt(e);
 	e = document.getElementById("time");
-        if (itm+1>0) e.value = itm;
-	e.onchange = update;
-	e.onkeyup = update;
+        e.value = ftm;
+	fevt(e);
 	e = document.getElementById("hdist");
-        if (ihd+1>0) e.value = ihd;
-	e.onchange = update;
-	e.onkeyup = update;
+        e.value = fhd;
+	fevt(e);
 	e = document.getElementById("udist");
-        if (iud+1>0) e.value = iud;
-	e.onchange = update;
-	e.onkeyup = update;
+        e.value = fud;
+	fevt(e);
 	e = document.getElementById("ddist");
-        if (idd+1>0) e.value = idd;
-	e.onchange = update;
-	e.onkeyup = update;
+        e.value = fdd;
+	fevt(e);
 
 	// default focus
 	if (!condfocus(document.f.bweight)) {
@@ -197,10 +192,22 @@ function setup() {
 	    }
 	  }
 	}
+}
+
+// This function does 3 things:
+//   - read initial values from URL query parameters (if any),
+//   - add event handlers (update) and ini-values to the form, and
+//   - the first update (reflect initial parameters to energy)
+function setup() {
+        initControls(false);
+
+        // monitor hash
+        window.onhashchange = function() { initControls(true); update(); };
 
         // first calculation
         update();
 }
+//ikymrkw-->
 </script>
 </head>
 
@@ -231,26 +238,26 @@ function setup() {
   <tr class="row_action">
     <th rowspan="4">行動
     <td>歩行時間
-    <td><input type="text" name="time" id="time" class="par"> min * 0.03
-    <td>
+    <td><input type="text" name="time" id="time" class="par"> 分
+    <td>* 0.03/kg
     <td>時間寄与分
     <td><input type="text" name="en_t" id="en_tm" disabled class="en"> kcal 
   <tr class="row_action">
     <td>歩行距離
-    <td><input type="text" name="hdist" id="hdist" class="par"> km * 0.3
-    <td>
+    <td><input type="text" name="hdist" id="hdist" class="par"> km
+    <td>* 0.3/kg
     <td>距離寄与分
     <td><input type="text" name="en_hd" id="en_hd" disabled class="en"> kcal 
   <tr class="row_action">
     <td>登り高低差
-    <td><input type="text" name="udist" id="udist" class="par"> km * 10.0
-    <td>
+    <td><input type="text" name="udist" id="udist" class="par"> km
+    <td>* 10.0/kg
     <td>登り寄与分
     <td><input type="text" name="en_ud" id="en_ud" disabled class="en"> kcal 
   <tr class="row_action">
     <td>下り高低差
-    <td><input type="text" name="ddist" id="ddist" class="par"> km * 0.6
-    <td>
+    <td><input type="text" name="ddist" id="ddist" class="par"> km
+    <td>* 0.6/kg
     <td>下り寄与分
     <td><input type="text" name="en_dd" id="en_dd" disabled class="en"> kcal 
   <tr class="row_total">
@@ -264,21 +271,24 @@ function setup() {
 
 <div>
 <a href="?" id="lk">現在の結果へのリンク</a> 
-／ <a href="#" onclick="update()">再計算</a>
-／ <a href="?">クリア</a>
+／ <a href="#" onclick="update(); return false;">再計算</a>
+／ <a href="#">クリア</a>
 </div>
 <div>
-注意：目安の値です。正確性は保証しません。
+注意：目安の値です。正確性は保証しません。算出式はページ下部に記載。
 </div>
 </div>
 <div>
 <p>サンプル</p>
 <ul>
-  <li> <a href="?bw=65&cw=5&tm=170&hd=7.1&ud=0.4&dd=0.4">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</a>
-  <li> <a href="?bw=65&cw=5&tm=240&hd=9&ud=0.835&dd=0.832">高水三山（65+5kg, 軍畑駅〜御嶽駅）</a>
-  <li> <a href="?bw=65&cw=5&tm=615&hd=13.2&ud=1.450&dd=1.450">富士山（65+5kg, 吉田口から往復）</a>
-, <a href="?bw=65&cw=5&tm=725&hd=15.5&ud=1.570&dd=1.570">（同左＋お鉢巡り）</a>
+  <li> <a href="#bw=65&cw=5&tm=170&hd=7.1&ud=0.4&dd=0.4">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</a>
+  <li> <a href="#bw=65&cw=5&tm=240&hd=9&ud=0.835&dd=0.832">高水三山（65+5kg, 軍畑駅〜御嶽駅）</a>
+  <li> <a href="#bw=65&cw=5&tm=615&hd=13.2&ud=1.450&dd=1.450">富士山（65+5kg, 吉田口から往復）</a>
+, <a href="#bw=65&cw=5&tm=725&hd=15.5&ud=1.570&dd=1.570">（同左＋お鉢巡り）</a>
 </ul>
 </div>
+<p>
+算出式：合計重量(kg) * ( 歩行時間(時)*1.8 + 歩行距離(km)*0.3 + 登り高低差(km)*10.0 + 下り高低差(km)*0.6 ) kcal：<a href="http://www.jfmga.com/pdf/tomuraushiyamareport.pdf">トムラウシ山遭難事故調査報告書</a>（中原ら「登山医学」26巻, 2006を引用）より
+</p>
 </body>
 </html>
