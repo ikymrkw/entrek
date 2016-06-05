@@ -161,27 +161,27 @@ function setup() {
 	e = document.getElementById("bweight");
         if (ibw+1>0) e.value = ibw;
 	e.onchange = update;
-	e.onkeydown = update;
+	e.onkeyup = update;
 	e = document.getElementById("cweight");
         if (icw+1>0) e.value = icw;
 	e.onchange = update;
-	e.onkeydown = update;
+	e.onkeyup = update;
 	e = document.getElementById("time");
         if (itm+1>0) e.value = itm;
 	e.onchange = update;
-	e.onkeydown = update;
+	e.onkeyup = update;
 	e = document.getElementById("hdist");
         if (ihd+1>0) e.value = ihd;
 	e.onchange = update;
-	e.onkeydown = update;
+	e.onkeyup = update;
 	e = document.getElementById("udist");
         if (iud+1>0) e.value = iud;
 	e.onchange = update;
-	e.onkeydown = update;
+	e.onkeyup = update;
 	e = document.getElementById("ddist");
         if (idd+1>0) e.value = idd;
 	e.onchange = update;
-	e.onkeydown = update;
+	e.onkeyup = update;
 
 	// default focus
 	if (!condfocus(document.f.bweight)) {
