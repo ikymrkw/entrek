@@ -12,13 +12,13 @@ function num(i) {
 }
 
 function update() {
-	var e, sbw, scw, st, shd, sud, sdd;
+	var e, sbw, scw, stm, shd, sud, sdd;
 	e = document.f.bweight;
 	sbw = e.value;
 	e = document.f.cweight;
 	scw = e.value;
 	e = document.f.time;
-	st  = e.value;
+	stm  = e.value;
 	e = document.f.hdist;
 	shd = e.value;
 	e = document.f.udist;
@@ -26,56 +26,47 @@ function update() {
 	e = document.f.ddist;
 	sdd = e.value;
 	
-var ibw, icw, it, ihd, iud, idd;
-var err = 0;
+	var ibw, icw, itm, ihd, iud, idd;
+	var err = 0;
 	try {
 	  ibw = parseFloat(sbw);
 	  icw = parseFloat(scw);
-	  it  = parseFloat(st);
+	  itm = parseFloat(stm);
 	  ihd = parseFloat(shd);
 	  iud = parseFloat(sud);
 	  idd = parseFloat(sdd);
 	} catch (ex) {
-err = 1;
-}
+	  err = 1;
+	}
 
-	f.energy.value = (ibw + icw) * (1.8 * it + 0.3 * ihd + 10.0 * iud + 0.6 * idd);
-	f.en_t  .value = (ibw + icw) * (1.8 * it);
-	f.en_hd .value = (ibw + icw) * (0.3 * ihd);
+	f.energy.value = (ibw + icw) * (1.8 * itm + 0.3 * ihd + 10.0 * iud + 0.6 * idd);
+	f.en_tm .value = (ibw + icw) * ( 1.8 * itm);
+	f.en_hd .value = (ibw + icw) * ( 0.3 * ihd);
 	f.en_ud .value = (ibw + icw) * (10.0 * iud);
-	f.en_dd .value = (ibw + icw) * (0.6 * idd);
+	f.en_dd .value = (ibw + icw) * ( 0.6 * idd);
 
         var lk = "";
-        if (ibw>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "bw=" + num(ibw);
-        }
-        if (icw>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "cw=" + num(icw);
-        }
-        if (it>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "t=" + num(it);
-        }
-        if (ihd>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "hd=" + num(ihd);
-        }
-        if (iud>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "ud=" + num(iud);
-        }
-        if (idd>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "dd=" + num(idd);
-        }
+	var addlk = function(name, value) {
+	  if (!(value>=0)) return;
+	  if (lk.length == 0) {
+	    lk += "#";
+	  } else {
+	    lk += "&";
+	  }
+	  lk += name + "=" + num(value);
+	};
+        addlk("bw", ibw);
+        addlk("cw", icw);
+        addlk("tm", itm);
+        addlk("hd", ihd);
+        addlk("ud", iud);
+        addlk("dd", idd);
         var elem = document.getElementById("lk");
         elem.href = lk;
         elem.innerText = lk;
 }
 function setup() {
-        var ibw=-1, icw=-1, it=-1, ihd=-1, idd=-1, iud=-1;
+        var ibw=-1, icw=-1, itm=-1, ihd=-1, idd=-1, iud=-1;
 	var h = window.location.hash;
         if (h==null || h==="") {} else {
           h = h.substring(1); // strip #
@@ -88,7 +79,7 @@ function setup() {
             if (nvp[0]==="cw") {
               icw = nvp[1];
             }
-            if (nvp[0]==="t") {
+            if (nvp[0]==="tm") {
               it = nvp[1];
             }
             if (nvp[0]==="hd") {
@@ -112,7 +103,7 @@ function setup() {
 	e.onchange = update;
 	e.onkeydown = update;
 	e = document.getElementById("time");
-        if (it+1>0) e.value = it;
+        if (itm+1>0) e.value = itm;
 	e.onchange = update;
 	e.onkeydown = update;
 	e = document.getElementById("hdist");
@@ -157,7 +148,7 @@ function setup() {
 =
 <input type="text" name="energy" id="energy" disabled> kcal
 <br>
-時間寄与分 <input type="text" name="en_t" id="en_t" disabled> kcal 
+時間寄与分 <input type="text" name="en_t" id="en_tm" disabled> kcal 
 <br>
 距離寄与分 <input type="text" name="en_hd" id="en_hd" disabled> kcal 
 <br>
