@@ -9,7 +9,8 @@
 table { border-width: 0; border-collapse: collapse; }
 td,th { padding-left: 8px; padding-right: 8px; }
 input.en  { text-align: right; width: 8em;
-	background-color: #dddddd; border-color: #dddddd; border-style: solid; }
+  color: black;
+	background-color: #ffffcc; border-color: #ffffcc; border-style: solid; }
 input.par { text-align: right; width: 8em;}
 #main { background-color: #cccc99; display: inline-block;}
 #calc { background-color: #88ff88; margin: 12px; }
@@ -17,7 +18,7 @@ input.par { text-align: right; width: 8em;}
 tr.row_header { background-color: #33cc00; }
 tr.row_weight { background-color: #cccc66; }
 tr.row_action { background-color: #99cc33; }
-tr.row_total  { background-color: #66cc00; }
+tr.row_total  { background-color: #66cc00; font-weight: bold; }
 td.row_total_empty  { background-color: #cccc99; }
 </style>
 
@@ -78,12 +79,12 @@ function update() {
 	}
 
 	var fw = (fbw + fcw);
-	var fa = (1.8 * ftm / 60.0 + 0.3 * fhd + 10.0 * fud + 0.6 * fdd);
+	var fa = (1.8 * ftm / 60.0 + 0.3 * fhd + 10.0 * fud / 1000.0 + 0.6 * fdd / 1000.0);
 	f.energy.value = enformat( fw * fa );
 	f.en_tm .value = enformat( fw * ( 1.8 * ftm / 60.0) );
 	f.en_hd .value = enformat( fw * ( 0.3 * fhd) );
-	f.en_ud .value = enformat( fw * (10.0 * fud) );
-	f.en_dd .value = enformat( fw * ( 0.6 * fdd) );
+	f.en_ud .value = enformat( fw * (10.0 * fud / 1000.0) );
+	f.en_dd .value = enformat( fw * ( 0.6 * fdd / 1000.0) );
 	f.en_bw .value = enformat( fbw * fa );
 	f.en_cw .value = enformat( fcw * fa );
 
@@ -250,14 +251,14 @@ function setup() {
     <td><input type="text" name="en_hd" id="en_hd" disabled class="en"> kcal 
   <tr class="row_action">
     <td>登り高低差
-    <td><input type="text" name="udist" id="udist" class="par"> km
-    <td>* 10.0/kg
+    <td><input type="text" name="udist" id="udist" class="par"> m
+    <td>/ 1000 * 10.0/kg
     <td>登り寄与分
     <td><input type="text" name="en_ud" id="en_ud" disabled class="en"> kcal 
   <tr class="row_action">
     <td>下り高低差
-    <td><input type="text" name="ddist" id="ddist" class="par"> km
-    <td>* 0.6/kg
+    <td><input type="text" name="ddist" id="ddist" class="par"> m
+    <td>/ 1000 * 0.6/kg
     <td>下り寄与分
     <td><input type="text" name="en_dd" id="en_dd" disabled class="en"> kcal 
   <tr class="row_total">
@@ -281,10 +282,10 @@ function setup() {
 <div>
 <p>サンプル</p>
 <ul>
-  <li> <a href="#bw=65&cw=5&tm=170&hd=7.1&ud=0.4&dd=0.4">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</a>
-  <li> <a href="#bw=65&cw=5&tm=240&hd=9&ud=0.835&dd=0.832">高水三山（65+5kg, 軍畑駅〜御嶽駅）</a>
-  <li> <a href="#bw=65&cw=5&tm=615&hd=13.2&ud=1.450&dd=1.450">富士山（65+5kg, 吉田口から往復）</a>
-, <a href="#bw=65&cw=5&tm=725&hd=15.5&ud=1.570&dd=1.570">（同左＋お鉢巡り）</a>
+  <li> <a href="#bw=65&cw=5&tm=170&hd=7.1&ud=400&dd=400">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</a>
+  <li> <a href="#bw=65&cw=5&tm=240&hd=9&ud=835&dd=832">高水三山（65+5kg, 軍畑駅〜御嶽駅）</a>
+  <li> <a href="#bw=65&cw=5&tm=615&hd=13.2&ud=1450&dd=1450">富士山（65+5kg, 吉田口から往復）</a>
+, <a href="#bw=65&cw=5&tm=725&hd=15.5&ud=1570&dd=1570">（同左＋お鉢巡り）</a>
 </ul>
 </div>
 <p>
