@@ -1,0 +1,111 @@
+<html lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>EnTrek: Trekking Energy Calculator</title>
+
+<style>
+div#langbar { text-align: right; }
+table { border-width: 0; border-collapse: collapse; }
+td,th { padding-left: 8px; padding-right: 8px; }
+input.en  { text-align: right; width: 8em;
+  color: black;
+	background-color: #ffffcc; border-color: #ffffcc; border-style: solid; }
+input.par { text-align: right; width: 8em;}
+#main { background-color: #cccc99; display: inline-block;}
+#calc { background-color: #88ff88; margin: 12px; }
+
+tr.row_header { background-color: #33cc00; }
+tr.row_weight { background-color: #cccc66; }
+tr.row_action { background-color: #99cc33; }
+tr.row_total  { background-color: #66cc00; font-weight: bold; }
+td.row_total_empty  { background-color: #cccc99; }
+</style>
+
+<script src="entrek.js"></script>
+</head>
+
+<body onload="setup()">
+<h1>EnTrek: Trekking Energy Calculator</h1>
+
+<div id="langbar">Change language: <a href="entrek.html">JA</a></div>
+
+<div id="main">
+<div>
+<form name="f">
+<table id="calc">
+  <tr class="row_header">
+    <th colspan="3">Parameters
+    <th>→
+    <th colspan="2">Energy Consumption
+  <tr class="row_weight">
+    <th rowspan="2">Weight
+    <td>Body
+    <td><input type="text" name="bweight" id="bweight" class="par"> kg
+    <td>
+    <td>from Body
+    <td><input type="text" name="en_bw" id="en_bw" disabled class="en"> kcal
+  <tr class="row_weight">
+    <td>Load
+    <td><input type="text" name="cweight" id="cweight" class="par"> kg
+    <td>
+    <td>from Load
+    <td><input type="text" name="en_cw" id="en_cw" disabled class="en"> kcal
+  <tr class="row_action">
+    <th rowspan="4">Action
+    <td>Walking Time
+    <td><input type="text" name="time" id="time" class="par"> minute
+    <td>* 0.03/kg
+    <td>from Time
+    <td><input type="text" name="en_t" id="en_tm" disabled class="en"> kcal 
+  <tr class="row_action">
+    <td>Distance
+    <td><input type="text" name="hdist" id="hdist" class="par"> km
+    <td>* 0.3/kg
+    <td>from Distance
+    <td><input type="text" name="en_hd" id="en_hd" disabled class="en"> kcal 
+  <tr class="row_action">
+    <td>Total Ascent
+    <td><input type="text" name="udist" id="udist" class="par"> m
+    <td>/ 1000 * 10.0/kg
+    <td>from Ascent
+    <td><input type="text" name="en_ud" id="en_ud" disabled class="en"> kcal 
+  <tr class="row_action">
+    <td>Total Descent
+    <td><input type="text" name="ddist" id="ddist" class="par"> m
+    <td>/ 1000 * 0.6/kg
+    <td>from Descent
+    <td><input type="text" name="en_dd" id="en_dd" disabled class="en"> kcal 
+  <tr class="row_total">
+    <td colspan="4" class="row_total_empty">
+    <td>Total Energy
+    <td><input type="text" name="energy" id="energy" disabled class="en"> kcal
+</table>
+
+</form>
+</div>
+
+<div>
+<a href="?" id="lk">Link to Current Result</a> 
+／ <a href="#" onclick="update(); return false;">Recalc</a>
+／ <a href="#">Clear</a>
+</div>
+<div>
+Note: The values are estimated, and not meant to be precise. See below for the formula.
+</div>
+</div>
+<div>
+<p>Samples (from courses near Tokyo)</p>
+<ul>
+	<li> <a href="#bw=65&cw=5&tm=170&hd=7.1&ud=400&dd=400">Mt. Takao (65+5kg, round trip from Takaosanguchi Sta.)</a>
+  <li> <a href="#bw=65&cw=5&tm=240&hd=9&ud=835&dd=832">Takamizu-san-zan (65+5kg, from Ikusabata Sta. to Mitake Sta.)</a>
+  <li> <a href="#bw=65&cw=5&tm=615&hd=13.2&ud=1450&dd=1450">Mt. Fuji (65+5kg, round trip from Yoshida entry)</a>
+, <a href="#bw=65&cw=5&tm=725&hd=15.5&ud=1570&dd=1570">(+ walk around the volcano)</a>
+</ul>
+</div>
+<p>
+Formula: Total energy [kcal] = total weight [kg] * ( time [hour] * 1.8 + distance [km] * 0.3 + total ascent [km] * 10.0 + total descent [km] * 0.6 ), cited from <a href="http://www.jfmga.com/pdf/tomuraushiyamareport.pdf">Investigation Report of the Distress Accident in Mount Tomuraushi</a> (which refers to Nakahara, et al., <i>Tozan Igaku</i>, Vol. 26, 2006)
+</p>
+</body>
+</html>
