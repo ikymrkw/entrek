@@ -1,16 +1,70 @@
 <html lang="ja">
+<<<<<<< HEAD
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <script>
 function num(i) {
         var s = "" + i;
+=======
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>EnTrek: 登山エネルギー消費計算機</title>
+
+<style>
+table { border-width: 0; border-collapse: collapse; }
+td,th { padding-left: 8px; padding-right: 8px; }
+input.en  { text-align: right; width: 8em;
+  color: black;
+	background-color: #ffffcc; border-color: #ffffcc; border-style: solid; }
+input.par { text-align: right; width: 8em;}
+#main { background-color: #cccc99; display: inline-block;}
+#calc { background-color: #88ff88; margin: 12px; }
+
+tr.row_header { background-color: #33cc00; }
+tr.row_weight { background-color: #cccc66; }
+tr.row_action { background-color: #99cc33; }
+tr.row_total  { background-color: #66cc00; font-weight: bold; }
+td.row_total_empty  { background-color: #cccc99; }
+</style>
+
+<script>
+<!--
+// Format energy f kcal properly
+//   NaN    => "NaN"
+//   12.34  => "12.34"
+//   12.345 => "12.35" (rounding)
+//   12.1   => "12.10" (right-pad zeros)
+//   12     => "12.00" (right-pad zeros (and point))
+function enformat(f) {
+  var s = "" + (Math.round(f * 100.0) / 100.0);
+  if (s==="NaN") {
+    // do nothing
+  }
+  else if (s.search("[.][0-9]$") != -1) {
+    s += "0";
+  }
+  else if (s.search("[.]") == -1) {
+    s += ".00";
+  }
+  return s;
+}
+
+// Format parameter f properly (for safe URL)
+// String representation of f must be "#", "#.#", or ".#"
+// where "#" is digits of any length.
+function num(f) {
+        var s = "" + f;
+>>>>>>> origin/gh-pages
         if (s.search("^([0-9]*[.])?[0-9]+$") == 0) {
           return s;
         }
         return "";
 }
 
+<<<<<<< HEAD
 function update() {
 	var e, sbw, scw, st, shd, sud, sdd;
 	e = document.f.bweight;
@@ -168,6 +222,243 @@ function setup() {
 </form>
 <p>
 <a href="#" id="lk">#</a>
+=======
+// Read parameters from the form and calculate energy consumption.
+function update() {
+	var sbw, scw, stm, shd, sud, sdd;
+	sbw = document.f.bweight.value;
+	scw = document.f.cweight.value;
+	stm = document.f.time.value;
+	shd = document.f.hdist.value;
+	sud = document.f.udist.value;
+	sdd = document.f.ddist.value;
+	
+	var ibw, fcw, itm, ihd, fud, fdd;
+	var err = 0;
+	try {
+	  fbw = parseFloat(sbw);
+	  fcw = parseFloat(scw);
+	  ftm = parseFloat(stm);
+	  fhd = parseFloat(shd);
+	  fud = parseFloat(sud);
+	  fdd = parseFloat(sdd);
+	} catch (ex) {
+	  err = 1;
+	}
+
+	var fw = (fbw + fcw);
+	var fa = (1.8 * ftm / 60.0 + 0.3 * fhd + 10.0 * fud / 1000.0 + 0.6 * fdd / 1000.0);
+	f.energy.value = enformat( fw * fa );
+	f.en_tm .value = enformat( fw * ( 1.8 * ftm / 60.0) );
+	f.en_hd .value = enformat( fw * ( 0.3 * fhd) );
+	f.en_ud .value = enformat( fw * (10.0 * fud / 1000.0) );
+	f.en_dd .value = enformat( fw * ( 0.6 * fdd / 1000.0) );
+	f.en_bw .value = enformat( fbw * fa );
+	f.en_cw .value = enformat( fcw * fa );
+
+	// Create link
+        var lk = "";
+	var addlk = function(name, value) {
+	  if (!(value>0)) return;
+	  if (lk.length == 0) {
+	    lk += "#";
+	  } else {
+	    lk += "&";
+	  }
+	  lk += name + "=" + num(value);
+	};
+        addlk("bw", fbw);
+        addlk("cw", fcw);
+        addlk("tm", ftm);
+        addlk("hd", fhd);
+        addlk("ud", fud);
+        addlk("dd", fdd);
+        var elem = document.getElementById("lk");
+        elem.href = lk;
+        //elem.innerText = (lk==="") ? "." : lk;
+	// ikymrkw
+}
+
+function condfocus(control) {
+  if (!control.value || control.value.length==0 || (0+control.value)==0) {
+    control.select(); control.focus();
+    return true;
+  }
+  return false;
+}
+
+function initControls(hashOnly) {
+        // Read initial values from query
+        var fbw=0, fcw=0, ftm=0, fhd=0, fdd=0, fud=0;
+        var parse = function(h) {
+          if (h==null || h==="") {} else {
+            h = h.substring(1); // to strip the first '?' 
+            var hs = h.split("&");
+            for (var i=0; i<hs.length; i++) {
+              var nvp = hs[i].split("=");
+              if (nvp[0]==="bw") {
+                fbw = nvp[1];
+              }
+              if (nvp[0]==="cw") {
+                fcw = nvp[1];
+              }
+              if (nvp[0]==="tm") {
+                ftm = nvp[1];
+              }
+              if (nvp[0]==="hd") {
+                fhd = nvp[1];
+              }
+              if (nvp[0]==="ud") {
+                fud = nvp[1];
+              }
+              if (nvp[0]==="dd") {
+                fdd = nvp[1];
+              }
+            }
+          }
+        };
+        if (!hashOnly) parse(window.location.search);
+	parse(window.location.hash);
+	
+	// Initialized controls (event handlers and ini-values)
+	var fevt = function(elem) {
+          if (!hashOnly) {
+            elem.onchange = update;
+            elem.onkeyup = update;
+          }
+        };
+	var e;
+	e = document.getElementById("bweight");
+        e.value = fbw;
+	fevt(e);
+	e = document.getElementById("cweight");
+        e.value = fcw;
+	fevt(e);
+	e = document.getElementById("time");
+        e.value = ftm;
+	fevt(e);
+	e = document.getElementById("hdist");
+        e.value = fhd;
+	fevt(e);
+	e = document.getElementById("udist");
+        e.value = fud;
+	fevt(e);
+	e = document.getElementById("ddist");
+        e.value = fdd;
+	fevt(e);
+
+	// default focus
+	if (!condfocus(document.f.bweight)) {
+	  if (!condfocus(document.f.cweight)) {
+	    if (!condfocus(document.f.time)) {
+	      if (!condfocus(document.f.hdist)) {
+	        if (!condfocus(document.f.udist)) {
+	          if (!condfocus(document.f.ddist)) {
+	            document.f.time.focus();
+	          }
+	        }
+	      }
+	    }
+	  }
+	}
+}
+
+// This function does 3 things:
+//   - read initial values from URL query parameters (if any),
+//   - add event handlers (update) and ini-values to the form, and
+//   - the first update (reflect initial parameters to energy)
+function setup() {
+        initControls(false);
+
+        // monitor hash
+        window.onhashchange = function() { initControls(true); update(); };
+
+        // first calculation
+        update();
+}
+//ikymrkw-->
+</script>
+</head>
+
+<body onload="setup()">
+<h1>EnTrek: 登山エネルギー消費計算機</h1>
+
+<div id="main">
+<div>
+<form name="f">
+<table id="calc">
+  <tr class="row_header">
+    <th colspan="3">パラメーター
+    <th>→
+    <th colspan="2">エネルギー消費
+  <tr class="row_weight">
+    <th rowspan="2">重量
+    <td>体重
+    <td><input type="text" name="bweight" id="bweight" class="par"> kg
+    <td>
+    <td>体重寄与分
+    <td><input type="text" name="en_bw" id="en_bw" disabled class="en"> kcal
+  <tr class="row_weight">
+    <td>荷物
+    <td><input type="text" name="cweight" id="cweight" class="par"> kg
+    <td>
+    <td>荷物寄与分
+    <td><input type="text" name="en_cw" id="en_cw" disabled class="en"> kcal
+  <tr class="row_action">
+    <th rowspan="4">行動
+    <td>歩行時間
+    <td><input type="text" name="time" id="time" class="par"> 分
+    <td>* 0.03/kg
+    <td>時間寄与分
+    <td><input type="text" name="en_t" id="en_tm" disabled class="en"> kcal 
+  <tr class="row_action">
+    <td>歩行距離
+    <td><input type="text" name="hdist" id="hdist" class="par"> km
+    <td>* 0.3/kg
+    <td>距離寄与分
+    <td><input type="text" name="en_hd" id="en_hd" disabled class="en"> kcal 
+  <tr class="row_action">
+    <td>登り高低差
+    <td><input type="text" name="udist" id="udist" class="par"> m
+    <td>/ 1000 * 10.0/kg
+    <td>登り寄与分
+    <td><input type="text" name="en_ud" id="en_ud" disabled class="en"> kcal 
+  <tr class="row_action">
+    <td>下り高低差
+    <td><input type="text" name="ddist" id="ddist" class="par"> m
+    <td>/ 1000 * 0.6/kg
+    <td>下り寄与分
+    <td><input type="text" name="en_dd" id="en_dd" disabled class="en"> kcal 
+  <tr class="row_total">
+    <td colspan="4" class="row_total_empty">
+    <td>総エネルギー消費
+    <td><input type="text" name="energy" id="energy" disabled class="en"> kcal
+</table>
+
+</form>
+</div>
+
+<div>
+<a href="?" id="lk">現在の結果へのリンク</a> 
+／ <a href="#" onclick="update(); return false;">再計算</a>
+／ <a href="#">クリア</a>
+</div>
+<div>
+注意：目安の値です。正確性は保証しません。算出式はページ下部に記載。
+</div>
+</div>
+<div>
+<p>サンプル</p>
+<ul>
+  <li> <a href="#bw=65&cw=5&tm=170&hd=7.1&ud=400&dd=400">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</a>
+  <li> <a href="#bw=65&cw=5&tm=240&hd=9&ud=835&dd=832">高水三山（65+5kg, 軍畑駅〜御嶽駅）</a>
+  <li> <a href="#bw=65&cw=5&tm=615&hd=13.2&ud=1450&dd=1450">富士山（65+5kg, 吉田口から往復）</a>
+, <a href="#bw=65&cw=5&tm=725&hd=15.5&ud=1570&dd=1570">（同左＋お鉢巡り）</a>
+</ul>
+</div>
+<p>
+算出式：合計重量(kg) * ( 歩行時間(時)*1.8 + 歩行距離(km)*0.3 + 登り高低差(km)*10.0 + 下り高低差(km)*0.6 ) kcal：<a href="http://www.jfmga.com/pdf/tomuraushiyamareport.pdf">トムラウシ山遭難事故調査報告書</a>（中原ら「登山医学」26巻, 2006を引用）より
+>>>>>>> origin/gh-pages
 </p>
 </body>
 </html>
