@@ -81,6 +81,9 @@ function update() {
         addlk("dd", fdd);
         var elem = document.getElementById("lk");
         elem.href = lk;
+
+	var chglang = document.getElementById("chglang");
+	chglang.href = chglang.href.split("#")[0] + lk;
         //elem.innerText = (lk==="") ? "." : lk;
 	// ikymrkw
 }
