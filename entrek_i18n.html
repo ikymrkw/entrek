@@ -30,23 +30,66 @@ var strres = {
     "title": "EnTrek: 登山エネルギー消費計算機",
     "parameters": "パラメーター",
     "energy": "エネルギー消費",
+    "weight": "重量",
+    "bodyweight": "体重",
+    "bwfactor": "体重寄与分",
+    "loadweight": "荷物",
+    "lwfactor": "荷物寄与分",
+    "movement": "行動",
+    "walktime": "歩行時間",
+    "min": "分",
+    "timefactor": "時間寄与分",
+    "walkdistance": "歩行距離",
+    "distfactor": "距離寄与分",
+    "ascent": "登り高低差",
+    "ascentfactor": "登り寄与分",
+    "descent": "下り高低差",
+    "descentfactor": "下り寄与分",
+    "totalenergy": "総エネルギー消費",
 
     "savelink": "現在の結果へのリンク",
     "recalc": "再計算",
     "clear": "クリア",
     "note": "注意：目安の値です。正確性は保証しません。算出式はページ下部に記載。",
     "sample": "サンプル"
+
+    "equation": "算出式：合計重量(kg) * ( 歩行時間(時)*1.8 + 歩行距離(km)*0.3 + 登り高低差(km)*10.0 + 下り高低差(km)*0.6 ) kcal",
+    "refprelink": ": ",
+    "reflink": "トムラウシ山遭難事故調査報告書",
+    "refpostlink": "（中原ら「登山医学」26巻, 2006を引用）より",
+    "dummy": "dummy"
   },
   "en": {
     "title": "EnTrek: Trekking Energy Calculator",
     "parameters": "Parameters",
     "energy": "Energy",
+    "weight": "Weight",
+    "bodyweight": "Body Weight",
+    "bwfactor": "kcal from Body",
+    "loadweight": "Load Weight",
+    "lwfactor": "kcal from Load",
+    "movement": "Action",
+    "walktime": "Walking Time",
+    "min": "minute",
+    "timefactor": "kcal from Time",
+    "walkdistance": "Distance",
+    "distfactor": "kcal from Distance",
+    "ascent": "Ascent",
+    "ascentfactor": "kcal from Ascent",
+    "descent": "Descent",
+    "descentfactor": "kcal from Descent",
+    "totalenergy": "Total Energy",
 
     "savelink": "Link to Current Result",
     "recalc": "Recalc",
     "clear": "Clear",
     "note": "Note: The values are estimated; not meant to be precise. See below for the equation.",
     "sample": "Sample"
+    "equation": "Total energy [kcal] = total weight [kg] * ( time [hour] * 1.8 + distance [km] * 0.3 + total ascent [km ]* 10.0 + total descent [km] * 0.6 )",
+    "refprelink": " from ",
+    "reflink": "Investigation Report of the Distress Accident in Mount Tomuraushi",
+    "refpostlink": " (Nakahara, et al., Tozan Igaku, Vol. 26, 2006)",
+    "dummy": "dummy"
   }
 }
 
@@ -223,15 +266,36 @@ function initControls(hashOnly) {
 
 function initStrings() {
 	$(document).attr("title", res.title);
-	$('h1').text(res.title);
-	$('.th-param').text(res.parameters);
-	$('.th-energy').text(res.energy);
-        $('.savelink').text(res.savelink);
-	$('.recalc').text(res.recalc);
-	$('.clear').text(res.clear);
-	$('.note').text(res.note);
-	$('.sample').text(res.sample);
+	$('#title').text(res.title);
+	$('#th-param').text(res.parameters);
+	$('#th-energy').text(res.energy);
+	$('#th-weight').text(res.weight);
+	$('#th-bodyweight').text(res.bodyweight);
+	$('#td-bwfactor').text(res.bwfactor);
+	$('#td-loadweight').text(res.loadweight);
+	$('#td-lwfactor').text(res.lwfactor);
+	$('#th-movement').text(res.movement);
+	$('#td-walktime').text(res.walktime);
+	$('#span-min').text(res.min);
+	$('#td-timefactor').text(res.timefactor);
+	$('#td-walkdistance').text(res.walkdistance);
+	$('#td-distfactor').text(res.distfactor);
+	$('#td-ascent').text(res.ascent);
+	$('#td-ascentfactor').text(res.ascentfactor);
+	$('#td-descent').text(res.descent);
+	$('#td-descentfactor').text(res.descentfactor);
+	$('#td-totalenergy').text(res.totalenergy);
 
+        $('#savelink').text(res.savelink);
+	$('#recalc').text(res.recalc);
+	$('#clear').text(res.clear);
+	$('#note').text(res.note);
+	$('#sample').text(res.sample);
+
+	$('#equation').text(res.equation);
+	$('#refprelink').text(res.refprelink);
+	$('#reflink').text(res.reflink);
+	$('#refpostlink').text(res.refpostlink);
 
 }
 
@@ -259,7 +323,7 @@ function setup() {
 </head>
 
 <body onload="setup()">
-<h1>EnTrek: 登山エネルギー消費計算機</h1>
+<h1 id="title">EnTrek: 登山エネルギー消費計算機</h1>
 
 <div id="main">
 <div>
@@ -335,7 +399,11 @@ function setup() {
 </ul>
 </div>
 <p>
-算出式：合計重量(kg) * ( 歩行時間(時)*1.8 + 歩行距離(km)*0.3 + 登り高低差(km)*10.0 + 下り高低差(km)*0.6 ) kcal：<a href="http://www.jfmga.com/pdf/tomuraushiyamareport.pdf">トムラウシ山遭難事故調査報告書</a>（中原ら「登山医学」26巻, 2006を引用）より
+<span id="equation">
+算出式：合計重量(kg) * ( 歩行時間(時)*1.8 + 歩行距離(km)*0.3 + 登り高低差(km)*10.0 + 下り高低差(km)*0.6 ) kcal
+</span>
+<span id="refprelink">: </span>
+<a href="http://www.jfmga.com/pdf/tomuraushiyamareport.pdf"><span id="reflink">トムラウシ山遭難事故調査報告書</span></a><span id="refpostlink">（中原ら「登山医学」26巻, 2006を引用）より</span>
 </p>
 </body>
 </html>
