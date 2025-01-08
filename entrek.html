@@ -1,12 +1,4 @@
 <html lang="ja">
-<<<<<<< HEAD
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta charset="UTF-8">
-<script>
-function num(i) {
-        var s = "" + i;
-=======
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -57,172 +49,12 @@ function enformat(f) {
 // where "#" is digits of any length.
 function num(f) {
         var s = "" + f;
->>>>>>> origin/gh-pages
         if (s.search("^([0-9]*[.])?[0-9]+$") == 0) {
           return s;
         }
         return "";
 }
 
-<<<<<<< HEAD
-function update() {
-	var e, sbw, scw, st, shd, sud, sdd;
-	e = document.f.bweight;
-	sbw = e.value;
-	e = document.f.cweight;
-	scw = e.value;
-	e = document.f.time;
-	st  = e.value;
-	e = document.f.hdist;
-	shd = e.value;
-	e = document.f.udist;
-	sud = e.value;
-	e = document.f.ddist;
-	sdd = e.value;
-	
-var ibw, icw, it, ihd, iud, idd;
-var err = 0;
-	try {
-	  ibw = parseFloat(sbw);
-	  icw = parseFloat(scw);
-	  it  = parseFloat(st);
-	  ihd = parseFloat(shd);
-	  iud = parseFloat(sud);
-	  idd = parseFloat(sdd);
-	} catch (ex) {
-err = 1;
-}
-
-	f.energy.value = (ibw + icw) * (1.8 * it + 0.3 * ihd + 10.0 * iud + 0.6 * idd);
-	f.en_t  .value = (ibw + icw) * (1.8 * it);
-	f.en_hd .value = (ibw + icw) * (0.3 * ihd);
-	f.en_ud .value = (ibw + icw) * (10.0 * iud);
-	f.en_dd .value = (ibw + icw) * (0.6 * idd);
-
-        var lk = "";
-        if (ibw>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "bw=" + num(ibw);
-        }
-        if (icw>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "cw=" + num(icw);
-        }
-        if (it>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "t=" + num(it);
-        }
-        if (ihd>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "hd=" + num(ihd);
-        }
-        if (iud>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "ud=" + num(iud);
-        }
-        if (idd>=0) {
-          if (lk.length == 0) { lk += "#"; } else { lk += "&"; }
-          lk += "dd=" + num(idd);
-        }
-        var elem = document.getElementById("lk");
-        elem.href = lk;
-        elem.innerText = lk;
-}
-function setup() {
-        var ibw=-1, icw=-1, it=-1, ihd=-1, idd=-1, iud=-1;
-	var h = window.location.hash;
-        if (h==null || h==="") {} else {
-          h = h.substring(1); // strip #
-          var hs = h.split("&");
-          for (var i=0; i<hs.length; i++) {
-            var nvp = hs[i].split("=");
-            if (nvp[0]==="bw") {
-              ibw = nvp[1];
-            }
-            if (nvp[0]==="cw") {
-              icw = nvp[1];
-            }
-            if (nvp[0]==="t") {
-              it = nvp[1];
-            }
-            if (nvp[0]==="hd") {
-              ihd = nvp[1];
-            }
-            if (nvp[0]==="ud") {
-              iud = nvp[1];
-            }
-            if (nvp[0]==="dd") {
-              idd = nvp[1];
-            }
-          }
-        }
-	var e;
-	e = document.getElementById("bweight");
-        if (ibw+1>0) e.value = ibw;
-	e.onchange = update;
-	e.onkeydown = update;
-	e = document.getElementById("cweight");
-        if (icw+1>0) e.value = icw;
-	e.onchange = update;
-	e.onkeydown = update;
-	e = document.getElementById("time");
-        if (it+1>0) e.value = it;
-	e.onchange = update;
-	e.onkeydown = update;
-	e = document.getElementById("hdist");
-        if (ihd+1>0) e.value = ihd;
-	e.onchange = update;
-	e.onkeydown = update;
-	e = document.getElementById("udist");
-        if (iud+1>0) e.value = iud;
-	e.onchange = update;
-	e.onkeydown = update;
-	e = document.getElementById("ddist");
-        if (idd+1>0) e.value = idd;
-	e.onchange = update;
-	e.onkeydown = update;
-
-        update();
-}
-</script>
-</head>
-<body onload="setup()">
-<form name="f">
-(
-体重 <input type="text" name="bweight" id="bweight"> kg
-+
-荷物 <input type="text" name="cweight" id="cweight"> kg
-)
-<br>
-*
-(
-<br>
-歩行時間 <input type="text" name="time" id="time"> h * 1.8
-<br>
-+
-歩行距離 <input type="text" name="hdist" id="hdist"> km * 0.3
-+
-登り高低差 <input type="text" name="udist" id="udist"> km * 10.0
-+
-下り高低差 <input type="text" name="ddist" id="ddist"> km * 0.6
-<br>
-)
-<br>
-=
-<input type="text" name="energy" id="energy" disabled> kcal
-<br>
-時間寄与分 <input type="text" name="en_t" id="en_t" disabled> kcal 
-<br>
-距離寄与分 <input type="text" name="en_hd" id="en_hd" disabled> kcal 
-<br>
-登り寄与分 <input type="text" name="en_ud" id="en_ud" disabled> kcal 
-<br>
-下り寄与分 <input type="text" name="en_dd" id="en_dd" disabled> kcal 
-
-</form>
-<p>
-<a href="#" id="lk">#</a>
-=======
 // Read parameters from the form and calculate energy consumption.
 function update() {
 	var sbw, scw, stm, shd, sud, sdd;
@@ -458,7 +290,6 @@ function setup() {
 </div>
 <p>
 算出式：合計重量(kg) * ( 歩行時間(時)*1.8 + 歩行距離(km)*0.3 + 登り高低差(km)*10.0 + 下り高低差(km)*0.6 ) kcal：<a href="http://www.jfmga.com/pdf/tomuraushiyamareport.pdf">トムラウシ山遭難事故調査報告書</a>（中原ら「登山医学」26巻, 2006を引用）より
->>>>>>> origin/gh-pages
 </p>
 </body>
 </html>
