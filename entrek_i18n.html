@@ -235,6 +235,8 @@ function initStrings() {
 
 }
 
+var res = strres.en;
+
 // This function does 3 things:
 //   - read initial values from URL query parameters (if any),
 //   - add event handlers (update) and ini-values to the form, and
@@ -250,15 +252,13 @@ function setup() {
         update();
 }
 
-var res = strres.en;
 
-$(document).ready(setup);
+//$(document).ready(setup);
 //ikymrkw-->
 </script>
 </head>
 
-<body>
-	<!--<body onload="setup()">-->
+<body onload="setup()">
 <h1>EnTrek: 登山エネルギー消費計算機</h1>
 
 <div id="main">
