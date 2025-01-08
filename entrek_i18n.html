@@ -52,6 +52,10 @@ var strres = {
     "clear": "クリア",
     "note": "注意：目安の値です。正確性は保証しません。算出式はページ下部に記載。",
     "sample": "サンプル",
+    "sample_takao", "高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）",
+    "sample_takamizu", "高水三山（65+5kg, 軍畑駅〜御嶽駅）",
+    "sample_fuji", "富士山（65+5kg, 吉田口から往復）",
+    "sample_fujiplus", "（同左＋お鉢巡り）",
 
     "equation": "算出式：合計重量(kg) * ( 歩行時間(時)*1.8 + 歩行距離(km)*0.3 + 登り高低差(km)*10.0 + 下り高低差(km)*0.6 ) kcal",
     "refprelink": ": ",
@@ -65,28 +69,33 @@ var strres = {
     "energy": "Energy",
     "weight": "Weight",
     "bodyweight": "Body Weight",
-    "bwfactor": "kcal from Body",
+    "bwfactor": "from Body",
     "loadweight": "Load Weight",
-    "lwfactor": "kcal from Load",
+    "lwfactor": "from Load",
     "movement": "Action",
     "walktime": "Walking Time",
     "min": "minute",
-    "timefactor": "kcal from Time",
+    "timefactor": "from Time",
     "walkdistance": "Distance",
-    "distfactor": "kcal from Distance",
+    "distfactor": "from Distance",
     "ascent": "Ascent",
-    "ascentfactor": "kcal from Ascent",
+    "ascentfactor": "from Ascent",
     "descent": "Descent",
-    "descentfactor": "kcal from Descent",
+    "descentfactor": "from Descent",
     "totalenergy": "Total Energy",
 
     "savelink": "Link to Current Result",
     "recalc": "Recalc",
     "clear": "Clear",
-    "note": "Note: The values are estimated; not meant to be precise. See below for the equation.",
+    "note": "Note: The values are estimated; not meant to be precise. See below for the formula.",
     "sample": "Sample",
+    "sample_takao", "Mt. Takao (65+5kg, round trip from Takaosanguchi Sta.)",
+    "sample_takamizu", "Takamizu-san-zan (65+5kg, from Ikusabata Sta. to Mitake Sta.)",
+    "sample_fuji", "Mt. Fuji (65+5kg, round trip from Yoshida-entry)",
+    "sample_fujiplus", "(+ walk around the volcano)",
+
     "equation": "Total energy [kcal] = total weight [kg] * ( time [hour] * 1.8 + distance [km] * 0.3 + total ascent [km ]* 10.0 + total descent [km] * 0.6 )",
-    "refprelink": " from ",
+    "refprelink": " cited from ",
     "reflink": "Investigation Report of the Distress Accident in Mount Tomuraushi",
     "refpostlink": " (Nakahara, et al., Tozan Igaku, Vol. 26, 2006)",
     "dummy": "dummy"
@@ -270,7 +279,7 @@ function initStrings() {
 	$('#th-param').text(res.parameters);
 	$('#th-energy').text(res.energy);
 	$('#th-weight').text(res.weight);
-	$('#th-bodyweight').text(res.bodyweight);
+	$('#td-bodyweight').text(res.bodyweight);
 	$('#td-bwfactor').text(res.bwfactor);
 	$('#td-loadweight').text(res.loadweight);
 	$('#td-lwfactor').text(res.lwfactor);
@@ -284,13 +293,17 @@ function initStrings() {
 	$('#td-ascentfactor').text(res.ascentfactor);
 	$('#td-descent').text(res.descent);
 	$('#td-descentfactor').text(res.descentfactor);
-	$('#td-totalenergy').text(res.totalenergy);
+	$('#th-totalenergy').text(res.totalenergy);
 
         $('#savelink').text(res.savelink);
 	$('#recalc').text(res.recalc);
 	$('#clear').text(res.clear);
 	$('#note').text(res.note);
 	$('#sample').text(res.sample);
+	$('#sample-takao').text(res.sample_takao);
+	$('#sample-takamizu').text(res.sample_takamizu);
+	$('#sample-fuji').text(res.sample_fuji);
+	$('#sample-fujiplus').text(res.sample_fujiplus);
 
 	$('#equation').text(res.equation);
 	$('#refprelink').text(res.refprelink);
@@ -392,10 +405,10 @@ function setup() {
 <div>
 	<p><span id="sample">サンプル</span></p>
 <ul>
-  <li> <a href="#bw=65&cw=5&tm=170&hd=7.1&ud=400&dd=400">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</a>
-  <li> <a href="#bw=65&cw=5&tm=240&hd=9&ud=835&dd=832">高水三山（65+5kg, 軍畑駅〜御嶽駅）</a>
-  <li> <a href="#bw=65&cw=5&tm=615&hd=13.2&ud=1450&dd=1450">富士山（65+5kg, 吉田口から往復）</a>
-, <a href="#bw=65&cw=5&tm=725&hd=15.5&ud=1570&dd=1570">（同左＋お鉢巡り）</a>
+	<li> <a href="#bw=65&cw=5&tm=170&hd=7.1&ud=400&dd=400"><span id="sample-takao">高尾山（65+5kg, 高尾山口駅から登り1号路, 下り6号路）</span></a>
+		<li> <a href="#bw=65&cw=5&tm=240&hd=9&ud=835&dd=832"><span id="sample-takamizu">高水三山（65+5kg, 軍畑駅〜御嶽駅）</span></a>
+			<li> <a href="#bw=65&cw=5&tm=615&hd=13.2&ud=1450&dd=1450"><span id="sample-fuji">富士山（65+5kg, 吉田口から往復）</span></a>
+				, <a href="#bw=65&cw=5&tm=725&hd=15.5&ud=1570&dd=1570"><span id="sample-fujiplus">（同左＋お鉢巡り）</span></a>
 </ul>
 </div>
 <p>
